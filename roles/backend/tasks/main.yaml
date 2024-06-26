@@ -31,6 +31,8 @@
 - name: download backend code
   ansible.builtin.get_url:
     url: https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
+    #you can replace backend as component if we want to run with component as below
+    #ansible-playbook main.yaml -e component=backend
     dest: /tmp/backend.zip
 
 - name: unzip backend code
