@@ -1,0 +1,45 @@
+- name: install nginx server
+  ansible.builtin.dnf:
+    name: nginx
+    state: latest
+
+- name: start and enable nginx
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: yes
+
+# To run from common role and below 2 steps can be replaced with below code.
+# - name: run app pre-requisites
+#   ansible.builtin.import_role:
+#     name: common
+#     tasks_from: app-pre-req 
+    
+- name: delete default website
+  ansible.builtin.file:
+    path: /usr/share/nginx/html
+    state: absent
+
+- name: create html directory
+  ansible.builtin.file:
+    path: /usr/share/nginx/html
+    state: directory
+
+- name: download and extract frontend code
+  ansible.builtin.unarchive:
+    src: https://expense-builds.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
+    dest: /usr/share/nginx/html
+    remote_src: yes
+
+#if any changes in configuration ,then only server to be restarted
+- name: copy backend conf
+  ansible.builtin.template:
+    src: expense.conf.j2
+    dest: /etc/nginx/default.d/expense.conf
+  notify: #handler
+  - restart nginx
+
+# - name: restart nginx
+#   ansible.builtin.service:
+#     name: nginx
+#     state: restarted

@@ -1,0 +1,3 @@
+plugin: amazon.aws.aws_ec2 # these are all default for dynamic inventory
+regions:
+- us-east-1
